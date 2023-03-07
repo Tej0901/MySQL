@@ -1,4 +1,4 @@
-
+-- set autocommit=0;
 -- ACTIVITY_1
 DROP DATABASE if exists StudentDatabase;
 CREATE DATABASE StudentDatabase;
@@ -63,7 +63,7 @@ VALUES("19EC1029",
 INSERT INTO StudentDetails 
 VALUES("19EC1018",
 	   "Priya",
-	   "Priya",
+	   "Manchi",
 	   "Female",
 	   "ppriya0576@gmail.com",
 	   "2002-05-07",
@@ -71,8 +71,8 @@ VALUES("19EC1018",
 );
 INSERT INTO StudentDetails 
 VALUES("19EC1056",
-	   "Manila",
-	   "Manila",
+	   "Priya",
+	   "Manchi",
 	   "Female",
 	   "mmanila0707@gmail.com",
 	   "2002-12-31",
@@ -130,8 +130,11 @@ SET Branch="CSE",Std="UG"
 WHERE ID="19EC2005";
 
 UPDATE StudentDetails
-SET Branch="MPC",Std="12th"
+SET Branch="MPC",Std="11th"
 WHERE ID="19EC2003";
+
+-- commit;
+-- rollback;
 
 
 -- describe StudentDetails;
@@ -142,7 +145,61 @@ SELECT COUNT(DateOfBirth)
 FROM StudentDetails
 WHERE (YEAR(DateOfBirth)="2002");
 
--- ACTIVITY_7
+-- ACTIVITY_7 
+SELECT YearOfAdmission,ID,COUNT(YearOfAdmission)
+FROM StudentDetails
+GROUP BY YearOfAdmission;
+
+-- ACTIVITY_8_USING_YOA
+SELECT YearOfadmission, COUNT(YearOfAdmission)
+FROM StudentDetails
+GROUP BY YearOfAdmission;
+
+-- ACTIVITY_8_USING_GENDER
+SELECT Gender, count(Gender) 
+FROM StudentDetails
+GROUP BY Gender;
+
+
+-- ACTIVITY_9_SAME_FIRST_NAME
+SELECT DISTINCT COUNT(A.ID)
+FROM StudentDetails A, StudentDetails B
+WHERE A.FirstName = B.FirstName
+AND A.LastName!=B.LastName
+AND A.ID != B.ID;
+
+-- ACTIVITY_9_SAME_LAST_NAME
+SELECT DISTINCT COUNT(A.ID)
+FROM StudentDetails A, StudentDetails B
+WHERE A.FirstName != B.FirstName
+AND A.LastName=B.LastName
+AND A.ID != B.ID;
+
+-- ACTIVITY_9_SAME_FIRST_AND_LAST_NAME
+SELECT DISTINCT A.ID
+FROM StudentDetails A, StudentDetails B
+WHERE A.FirstName=B.FirstName
+    AND A.LastName=B.LastName
+    AND A.ID!=B.ID;
+
+-- ACTIVITY_10_MAX_No_Of_Students_In_A_Year
+SELECT YearOfAdmission,COUNT(YearOfAdmission) AS max_occurrence
+FROM StudentDetails
+GROUP BY YearOfAdmission
+ORDER BY max_occurrence desc
+LIMIT 1;
+
+-- ACTIVITY_10_MIN_No_Of_Students_In_A_Year
+SELECT YearOfAdmission, COUNT(YearOfAdmission) AS min_occurrence
+FROM StudentDetails
+GROUP BY YearOfAdmission
+ORDER BY min_occurrence asc
+LIMIT 1;
+
+-- ACTIVITY_11
+SELECT * FROM StudentDetails
+ORDER BY DateOfBirth
+LIMIT 5;
 
 
 
