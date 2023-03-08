@@ -146,48 +146,60 @@ FROM StudentDetails
 WHERE (YEAR(DateOfBirth)="2002");
 
 -- ACTIVITY_7 
-SELECT YearOfAdmission,ID,COUNT(YearOfAdmission)
+SELECT YearOfAdmission,COUNT(*) AS NoOfStudents
 FROM StudentDetails
 GROUP BY YearOfAdmission;
 
--- ACTIVITY_8_USING_YOA
-SELECT YearOfadmission, COUNT(YearOfAdmission)
+
+-- ACTIVITY_8
+SELECT YearOfAdmission,Gender,COUNT(*) AS NoOfStudents 
 FROM StudentDetails
-GROUP BY YearOfAdmission;
+GROUP BY Gender,YearOfAdmission;
 
--- ACTIVITY_8_USING_GENDER
-SELECT Gender, count(Gender) 
-FROM StudentDetails
-GROUP BY Gender;
-
-
--- ACTIVITY_9_SAME_FIRST_NAME
-SELECT DISTINCT COUNT(A.ID)
+-- ACTIVITY_9_SAME_FIRST_NAME_METHOD_1
+SELECT A.FirstName, A.ID
 FROM StudentDetails A, StudentDetails B
 WHERE A.FirstName = B.FirstName
-AND A.LastName!=B.LastName
-AND A.ID != B.ID;
+	AND A.LastName!=B.LastName
+	AND A.ID != B.ID;
+-- METHOD_2
+SELECT FirstName, COUNT(*) AS NoOfStudents
+FROM StudentDetails
+GROUP BY FirstName
+HAVING NoOfStudents > 1;
 
--- ACTIVITY_9_SAME_LAST_NAME
-SELECT DISTINCT COUNT(A.ID)
+-- ACTIVITY_9_SAME_LAST_NAME_METHOD_1
+SELECT A.LastName,A.ID
 FROM StudentDetails A, StudentDetails B
 WHERE A.FirstName != B.FirstName
-AND A.LastName=B.LastName
-AND A.ID != B.ID;
+	AND A.LastName=B.LastName
+	AND A.ID != B.ID;
+-- METHOD_2
+SELECT LastName, COUNT(*) AS NoOfStudents
+FROM StudentDetails
+GROUP BY LastName
+HAVING NoOfStudents > 1;
 
--- ACTIVITY_9_SAME_FIRST_AND_LAST_NAME
-SELECT DISTINCT A.ID
+
+-- ACTIVITY_9_SAME_FIRST_AND_LAST_NAME_METHOD1
+SELECT A.FirstName,A.LastName,A.ID
 FROM StudentDetails A, StudentDetails B
 WHERE A.FirstName=B.FirstName
     AND A.LastName=B.LastName
     AND A.ID!=B.ID;
+-- METHOD_2
+SELECT FirstName ,Lastname, COUNT(*) AS NoOfStudents
+FROM StudentDetails 
+GROUP BY FirstName,LastName
+HAVING NoOfStudents > 1;
 
 -- ACTIVITY_10_MAX_No_Of_Students_In_A_Year
-SELECT YearOfAdmission,COUNT(YearOfAdmission) AS max_occurrence
+SELECT YearOfAdmission-- ,COUNT(*) AS max_occurrence
 FROM StudentDetails
 GROUP BY YearOfAdmission
-ORDER BY max_occurrence desc
+ORDER BY COUNT(*) desc
 LIMIT 1;
+
 
 -- ACTIVITY_10_MIN_No_Of_Students_In_A_Year
 SELECT YearOfAdmission, COUNT(YearOfAdmission) AS min_occurrence
