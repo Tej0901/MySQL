@@ -135,7 +135,16 @@ WHERE ID="19EC2003";
 
 -- commit;
 -- rollback;
-
+INSERT INTO StudentDetails 
+VALUES("19EC1002",
+	   "Harshini",
+	   "Laxman",
+	   "Female",
+	   "harshini0808@gmail.com",
+	   "2001-06-06",
+	   "2022",
+	   "NA",
+	   "9th");
 
 -- describe StudentDetails;
 select * from StudentDetails;
@@ -157,7 +166,7 @@ FROM StudentDetails
 GROUP BY Gender,YearOfAdmission;
 
 -- ACTIVITY_9_SAME_FIRST_NAME_METHOD_1
-SELECT A.FirstName, A.ID
+SELECT DISTINCT(A.ID),A.FirstName,A.LastName
 FROM StudentDetails A, StudentDetails B
 WHERE A.FirstName = B.FirstName
 	AND A.LastName!=B.LastName
@@ -169,7 +178,7 @@ GROUP BY FirstName
 HAVING NoOfStudents > 1;
 
 -- ACTIVITY_9_SAME_LAST_NAME_METHOD_1
-SELECT A.LastName,A.ID
+SELECT DISTINCT(A.ID),A.FirstName,A.LastName
 FROM StudentDetails A, StudentDetails B
 WHERE A.FirstName != B.FirstName
 	AND A.LastName=B.LastName
@@ -194,7 +203,7 @@ GROUP BY FirstName,LastName
 HAVING NoOfStudents > 1;
 
 -- ACTIVITY_10_MAX_No_Of_Students_In_A_Year
-SELECT YearOfAdmission-- ,COUNT(*) AS max_occurrence
+SELECT YearOfAdmission -- ,COUNT(*) AS max_occurrence
 FROM StudentDetails
 GROUP BY YearOfAdmission
 ORDER BY COUNT(*) desc
@@ -202,7 +211,7 @@ LIMIT 1;
 
 
 -- ACTIVITY_10_MIN_No_Of_Students_In_A_Year
-SELECT YearOfAdmission, COUNT(YearOfAdmission) AS min_occurrence
+SELECT YearOfAdmission, COUNT(*) AS min_occurrence
 FROM StudentDetails
 GROUP BY YearOfAdmission
 ORDER BY min_occurrence asc
@@ -212,6 +221,11 @@ LIMIT 1;
 SELECT * FROM StudentDetails
 ORDER BY DateOfBirth
 LIMIT 5;
+
+select FirstName 
+From StudentDetails
+where FirstName Like "_A%";
+
 
 
 
