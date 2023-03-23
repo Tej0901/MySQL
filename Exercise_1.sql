@@ -12,7 +12,7 @@ CREATE TABLE StudentDetails(
 	Gender TINYTEXT NOT NULL,
 	Email  VARCHAR(50) NOT NULL,
 	YearOfBirth  DATE NOT NULL,
-    CONSTRAINT PK_Student PRIMARY KEY(ID,Email)
+    PRIMARY KEY (ID ,Email) 
 );
 
 -- ACTIVITY_3
@@ -160,7 +160,7 @@ VALUES("19EC1002",
 select * from StudentDetails;
 
 -- ACTIVITY_6
-SELECT COUNT(DateOfBirth)
+SELECT COUNT(DateOfBirth) AS NoOfStudents
 FROM StudentDetails
 WHERE (YEAR(DateOfBirth)="2002");
 
@@ -174,6 +174,7 @@ GROUP BY YearOfAdmission;
 SELECT YearOfAdmission,Gender,COUNT(*) AS NoOfStudents 
 FROM StudentDetails
 GROUP BY Gender,YearOfAdmission;
+
 
 -- ACTIVITY_9_SAME_FIRST_NAME_METHOD_1
 SELECT DISTINCT(A.ID),A.FirstName,A.LastName
@@ -240,12 +241,12 @@ select * from StudentDetails;
 
 -- EXERCISE_2
 -- 2
-DROP TABLE Marks;
+-- DROP TABLE Marks;
 CREATE TABLE Marks(
 	ID VARCHAR(10) NOT NULL,
     subject VARCHAR(20) NOT NULL,
     mark INT ,
-    FOREIGN KEY (ID) REFERENCES StudentDetails(ID)
+    constraint fk_student FOREIGN KEY (ID) REFERENCES StudentDetails(ID) on delete cascade
     );
     
 INSERT INTO Marks VALUES("19EC1021",'maths',99);
@@ -270,19 +271,30 @@ INSERT INTO Marks VALUES("19EC1002",'social',null);
 select * from Marks;
 
 -- 3
-SELECT StudentDetails.FirstName,Marks.subject,Marks.mark,StudentDetails.Std
+SELECT FirstName,subject,mark,Std
 FROM StudentDetails JOIN Marks
 ON StudentDetails.ID=Marks.ID 
 WHERE Marks.mark>90
-ORDER BY StudentDetails.FirstName;  -- AND StudentDetails.YEAR(YearOfAdmission)='2022';
+;  -- AND StudentDetails.YEAR(YearOfAdmission)='2022';
 
+-- 4
+SELECT FirstName, subject, mark, std
+FROM StudentDetails
+JOIN Marks ON StudentDetails.ID = Marks.ID
+WHERE mark > 90
+  AND subject IN (
+    SELECT DISTINCT subject
+    FROM Marks
+    WHERE mark > 90
+  );
+
+  
 -- 5
-DELETE FROM StudentDetails
-WHERE StudentDetails.ID='19EC1002';
--- SELECT * from StudentDetails;
-DELETE FROM Marks
-WHERE Marks.ID='19EC1002';
--- select * from Marks;
+-- DELETE FROM StudentDetails
+-- WHERE ID='19EC1018';
+
+SELECT * from StudentDetails;
+select * from Marks;
 
 -- 6
 -- DROP TABLE StudentAddress;
@@ -318,6 +330,13 @@ FROM StudentDetails LEFT JOIN Marks
 ON  StudentDetails.ID = Marks.ID
 WHERE Marks.mark IS NULL;
 
+-- 8
+SELECT DISTINCT FirstName FROM (SELECT StudentDetails.FirstName, Marks.subject, Marks.mark, StudentDetails.Std
+FROM StudentDetails
+JOIN Marks ON StudentDetails.ID = Marks.ID
+WHERE Marks.mark > 90) AS sampletable ;
+-- AND (Marks.academic_year = 'current' OR Marks.academic_year = 'previous');
+
 
 -- 9_A
 SELECT  DISTINCT StudentDetails.ID,StudentDetails.FirstName,StudentDetails.LastName,SUM(Marks.mark) AS total
@@ -334,6 +353,8 @@ ON StudentDetails.ID = Marks.ID
 GROUP BY StudentDetails.ID,StudentDetails.FirstName,StudentDetails.FirstName,StudentDetails.LastName
 ORDER BY total ASC
 LIMIT 1;
+
+
 
 
 
