@@ -143,6 +143,15 @@ UPDATE StudentDetails
 SET Branch="MPC",Std="11th"
 WHERE ID="19EC2003";
 
+-- INSERT INTO StudentDetails 
+-- VALUES("19EC1021",
+-- 	   "Teja",
+-- 	   "Chinthapatla",
+-- 	   "Male",
+-- 	   "chvsstejavardhan901@gmail.com",
+-- 	   "2002-01-09",
+--        "2019"
+-- );
 -- commit;
 -- rollback;
 INSERT INTO StudentDetails 
@@ -155,6 +164,11 @@ VALUES("19EC1002",
 	   "2022",
 	   "NA",
 	   "9th");
+       
+
+-- UPDATE StudentDetails
+-- SET ID='19EC10210'
+-- WHERE ID='19EC1021';
 
 -- describe StudentDetails;
 select * from StudentDetails;
@@ -162,7 +176,7 @@ select * from StudentDetails;
 -- ACTIVITY_6
 SELECT COUNT(DateOfBirth) AS NoOfStudents
 FROM StudentDetails
-WHERE (YEAR(DateOfBirth)="2002");
+WHERE (YEAR(DateOfBirth)="2000");
 
 -- ACTIVITY_7 
 SELECT YearOfAdmission,COUNT(*) AS NoOfStudents
@@ -200,6 +214,7 @@ FROM StudentDetails
 GROUP BY LastName
 HAVING NoOfStudents > 1;
 
+-- CREATE INDEX name ON Table_name(clolumns);
 
 -- ACTIVITY_9_SAME_FIRST_AND_LAST_NAME_METHOD1
 SELECT A.FirstName,A.LastName,A.ID
@@ -221,12 +236,12 @@ ORDER BY COUNT(*) desc
 LIMIT 1;
 
 
--- ACTIVITY_10_MIN_No_Of_Students_In_A_Year
+-- ACTIVITY_10_MIN_No_Of_Students_In_A_Year -- try with subquery or anyother functions
 SELECT YearOfAdmission, COUNT(*) AS min_occurrence
 FROM StudentDetails
 GROUP BY YearOfAdmission
 ORDER BY min_occurrence asc
-LIMIT 1;
+;
 
 -- ACTIVITY_11
 SELECT * FROM StudentDetails
@@ -246,27 +261,49 @@ CREATE TABLE Marks(
 	ID VARCHAR(10) NOT NULL,
     subject VARCHAR(20) NOT NULL,
     mark INT ,
+    academicYear YEAR NOT NULL,
     constraint fk_student FOREIGN KEY (ID) REFERENCES StudentDetails(ID) on delete cascade
     );
-    
-INSERT INTO Marks VALUES("19EC1021",'maths',99);
-INSERT INTO Marks VALUES("19EC1021",'social',100);
-INSERT INTO Marks VALUES("19EC1020",'maths',89);
-INSERT INTO Marks VALUES("19EC1020",'social',96);
-INSERT INTO Marks VALUES("19EC1018",'maths',87);
-INSERT INTO Marks VALUES("19EC1018",'social',null);
-INSERT INTO Marks VALUES("19EC1025",'maths',90);
-INSERT INTO Marks VALUES("19EC1025",'social',80);
-INSERT INTO Marks VALUES("19EC1029",'maths',77);
-INSERT INTO Marks VALUES("19EC1029",'social',84);
-INSERT INTO Marks VALUES("19EC2003",'maths',97);
-INSERT INTO Marks VALUES("19EC2003",'social',91);
-INSERT INTO Marks VALUES("19EC1056",'maths',null);
-INSERT INTO Marks VALUES("19EC1056",'social',88);
-INSERT INTO Marks VALUES("19EC2005",'maths',93);
-INSERT INTO Marks VALUES("19EC2005",'social',78);
-INSERT INTO Marks VALUES("19EC1002",'maths',null);
-INSERT INTO Marks VALUES("19EC1002",'social',null);
+
+-- desc Marks;
+
+INSERT INTO Marks VALUES("19EC1021",'maths',99,'2023');
+INSERT INTO Marks VALUES("19EC1021",'social',100,'2023');
+INSERT INTO Marks VALUES("19EC1020",'maths',89,'2023');
+INSERT INTO Marks VALUES("19EC1020",'social',96,'2023');
+INSERT INTO Marks VALUES("19EC1018",'maths',87,'2023');
+INSERT INTO Marks VALUES("19EC1018",'social',null,'2023');
+INSERT INTO Marks VALUES("19EC1025",'maths',90,'2023');
+INSERT INTO Marks VALUES("19EC1025",'social',80,'2023');
+INSERT INTO Marks VALUES("19EC1029",'maths',77,'2023');
+INSERT INTO Marks VALUES("19EC1029",'social',84,'2023');
+INSERT INTO Marks VALUES("19EC2003",'maths',97,'2023');
+INSERT INTO Marks VALUES("19EC2003",'social',91,'2023');
+INSERT INTO Marks VALUES("19EC1056",'maths',null,'2023');
+INSERT INTO Marks VALUES("19EC1056",'social',88,'2023');
+INSERT INTO Marks VALUES("19EC2005",'maths',93,'2023');
+INSERT INTO Marks VALUES("19EC2005",'social',78,'2023');
+INSERT INTO Marks VALUES("19EC1002",'maths',null,'2023');
+INSERT INTO Marks VALUES("19EC1002",'social',null,'2023');
+
+INSERT INTO Marks VALUES("19EC1021",'maths',92,'2022');
+INSERT INTO Marks VALUES("19EC1021",'social',90,'2022');
+INSERT INTO Marks VALUES("19EC1020",'maths',93,'2022');
+INSERT INTO Marks VALUES("19EC1020",'social',null,'2022');
+INSERT INTO Marks VALUES("19EC1018",'maths',78,'2022');
+INSERT INTO Marks VALUES("19EC1018",'social',67,'2022');
+INSERT INTO Marks VALUES("19EC1025",'maths',null,'2022');
+INSERT INTO Marks VALUES("19EC1025",'social',80,'2022');
+INSERT INTO Marks VALUES("19EC1029",'maths',79,'2022');
+INSERT INTO Marks VALUES("19EC1029",'social',56,'2022');
+INSERT INTO Marks VALUES("19EC2003",'maths',null,'2022');
+INSERT INTO Marks VALUES("19EC2003",'social',82,'2022');
+INSERT INTO Marks VALUES("19EC1056",'maths',90,'2022');
+INSERT INTO Marks VALUES("19EC1056",'social',69,'2022');
+INSERT INTO Marks VALUES("19EC2005",'maths',null,'2022');
+INSERT INTO Marks VALUES("19EC2005",'social',91,'2022');
+INSERT INTO Marks VALUES("19EC1002",'maths',51,'2022');
+INSERT INTO Marks VALUES("19EC1002",'social',99,'2022');
 
 select * from Marks;
 
@@ -275,23 +312,37 @@ SELECT FirstName,subject,mark,Std
 FROM StudentDetails JOIN Marks
 ON StudentDetails.ID=Marks.ID 
 WHERE Marks.mark>90
-;  -- AND StudentDetails.YEAR(YearOfAdmission)='2022';
+AND Marks.academicYear='2023';
+-- OR 
+SELECT student.ID,student.FirstName,student.LastName, student.std
+FROM StudentDetails student
+INNER JOIN Marks m ON student.ID = m.ID
+WHERE m.academicYear IN ('2023') AND m.mark>90
+GROUP BY student.ID, student.FirstName, student.std,student.LastName;
 
 -- 4
 SELECT FirstName, subject, mark, std
 FROM StudentDetails
 JOIN Marks ON StudentDetails.ID = Marks.ID
-WHERE mark > 90
+WHERE mark > 90 AND academicYear='2023'
   AND subject IN (
     SELECT DISTINCT subject
     FROM Marks
-    WHERE mark > 90
+    WHERE mark > 90 
   );
 
   
 -- 5
+
+-- SET FOREIGN_KEY_CHECKS = 0;
+
 -- DELETE FROM StudentDetails
--- WHERE ID='19EC1018';
+-- WHERE ID='19EC1002';
+
+-- DELETE FROM Marks
+-- Where ID='19EC1002';
+
+-- SET FOREIGN_KEY_CHECKS =1;
 
 SELECT * from StudentDetails;
 select * from Marks;
@@ -317,31 +368,37 @@ INSERT INTO StudentAddress VALUES('19EC2005','1-1647','tambaram','TN');
 INSERT INTO StudentAddress VALUES('19EC2003','1-1648','srikalahasti','AP');
 INSERT INTO StudentAddress VALUES('19EC1002','1-1649','potheri','TN');
 
+
 select * from StudentAddress;
 
 SELECT StudentDetails.FirstName,StudentDetails.Branch 
 FROM StudentDetails JOIN StudentAddress
 ON StudentDetails.ID = StudentAddress.ID
 WHERE StudentAddress.State = 'AP';
+select * from marks;
 
 -- 7
 SELECT  DISTINCT StudentDetails.ID,StudentDetails.FirstName,StudentDetails.Branch
 FROM StudentDetails LEFT JOIN Marks
 ON  StudentDetails.ID = Marks.ID
-WHERE Marks.mark IS NULL;
+WHERE Marks.mark IS NULL AND Marks.academicYear IN('2023','2022');
 
 -- 8
-SELECT DISTINCT FirstName FROM (SELECT StudentDetails.FirstName, Marks.subject, Marks.mark, StudentDetails.Std
-FROM StudentDetails
-JOIN Marks ON StudentDetails.ID = Marks.ID
-WHERE Marks.mark > 90) AS sampletable ;
--- AND (Marks.academic_year = 'current' OR Marks.academic_year = 'previous');
+SELECT student.ID, student.FirstName, student.LastName, student.std
+FROM studentdetails student INNER JOIN Marks ON student.ID = Marks.ID
+WHERE student.ID IN (
+  SELECT m.ID FROM Marks m
+  WHERE m.academicYear IN ('2022') AND m.mark > 90
+  GROUP BY m.ID
+  HAVING COUNT(DISTINCT m.subject) >= 1) AND Marks.academicYear ='2023' AND Marks.mark>90
+  GROUP BY student.ID,student.FirstName, student.LastName, student.std;
 
+select * from Marks;
 
 -- 9_A
 SELECT  DISTINCT StudentDetails.ID,StudentDetails.FirstName,StudentDetails.LastName,SUM(Marks.mark) AS total
-FROM StudentDetails  JOIN Marks
-ON StudentDetails.ID = Marks.ID
+FROM StudentDetails JOIN Marks
+ON StudentDetails.ID = Marks.ID AND Marks.academicYear = '2023'
 GROUP BY StudentDetails.ID,StudentDetails.FirstName,StudentDetails.LastName
 ORDER BY total DESC
 LIMIT 1;
@@ -349,47 +406,10 @@ LIMIT 1;
 -- 9_B
 SELECT  DISTINCT StudentDetails.ID,StudentDetails.FirstName,StudentDetails.LastName,SUM(Marks.mark) AS total
 FROM StudentDetails JOIN Marks
-ON StudentDetails.ID = Marks.ID
+ON StudentDetails.ID = Marks.ID AND Marks.academicYear = '2023'
 GROUP BY StudentDetails.ID,StudentDetails.FirstName,StudentDetails.FirstName,StudentDetails.LastName
 ORDER BY total ASC
 LIMIT 1;
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-    
-    
-    
-
-
- 
-
-
-
-
-
-
-
-
-
-
-
-
-                                  
 
