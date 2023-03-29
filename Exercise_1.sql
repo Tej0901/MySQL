@@ -15,6 +15,8 @@ CREATE TABLE StudentDetails(
     PRIMARY KEY (ID ,Email) 
 );
 
+select * from StudentDetails;
+
 -- ACTIVITY_3
 ALTER TABLE StudentDetails
 ADD YearOfAdmission YEAR NOT NULL;
@@ -384,16 +386,28 @@ ON  StudentDetails.ID = Marks.ID
 WHERE Marks.mark IS NULL AND Marks.academicYear IN('2023','2022');
 
 -- 8
-SELECT student.ID, student.FirstName, student.LastName, student.std
+SELECT DISTINCT student.ID, student.FirstName, student.LastName, student.std
 FROM studentdetails student INNER JOIN Marks ON student.ID = Marks.ID
 WHERE student.ID IN (
   SELECT m.ID FROM Marks m
-  WHERE m.academicYear IN ('2022') AND m.mark > 90
+  WHERE  m.academicYear = '2022' AND m.mark>90
   GROUP BY m.ID
-  HAVING COUNT(DISTINCT m.subject) >= 1) AND Marks.academicYear ='2023' AND Marks.mark>90
-  GROUP BY student.ID,student.FirstName, student.LastName, student.std;
+  HAVING COUNT(DISTINCT m.subject) >= 1) AND MArks.academicYear='2023' AND Marks.mark>90;
+ --  GROUP BY student.ID,student.FirstName, student.LastName, student.std;
 
-select * from Marks;
+-- 8 (OR)
+select distinct sd.FirstName,sd.LastName,sd.std from StudentDetails sd join Marks m
+on sd.ID=m.ID where sd.ID in(SELECT distinct m1.ID FROM Marks m1,Marks m2
+  WHERE m1.ID = m2.ID AND m1.academicYear = '2022' AND m1.mark > 90 AND m2.academicYear ='2023' AND m2.mark>90);
+-- 8 (OR)
+select distinct sd.FirstName,sd.LastName,sd.std from StudentDetails sd join Marks m
+on sd.ID=m.ID where sd.ID in(
+select id from Marks 
+where mark>90 and academicYear='2023') AND sd.ID in
+((select id from Marks where mark>90 and academicYear=2022));
+
+
+
 
 -- 9_A
 SELECT  DISTINCT StudentDetails.ID,StudentDetails.FirstName,StudentDetails.LastName,SUM(Marks.mark) AS total
@@ -412,4 +426,38 @@ ORDER BY total ASC
 LIMIT 1;
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+    
+    
+    
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+                                  
 
